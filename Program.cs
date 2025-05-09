@@ -1,18 +1,24 @@
 var builder = WebApplication.CreateBuilder(args);
+
+// Add PostgreSQL configuration
+builder.Services.AddDbContext<CarDbContext>(options => 
+    options.UseNpsql(builder.Configuration.GetConnectionString("Default")));
+
 var app = builder.Build();
 
-app.MapGet("/cars", () =>
+app.MapGet("/cars", async (CarDbContext dbContext) => 
 {
-    var cars = new List<Car>
-    {
-        new Car("Tesla Model S", "https://example.com/tesla.jpg", 79990),
-        new Car("Ford Mustang", "https://example.com/ford.jpg", 42995),
-        new Car("Toyota Camry", "https://example.com/toyota.jpg", 25945)
-    };
-
-    return Results.Ok(cars);
+    // Now using database instead of hardcoded list
+    return Results.Ok(await dbContext.Cars.ToListAsync());
 });
 
 app.Run();
 
+// Move these to separate files in a real project
 public record Car(string Name, string PhotoUrl, decimal Price);
+
+public class CarDbContext : DbContext
+{
+    public CarDbContext(DbContextOptions<CarDbContext> options) : base(options) {}
+    public DbSet<Car> Cars => Set<Car>();
+}
