@@ -1,20 +1,16 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
 [ApiController]
 [Route("api/[controller]")]
-public class CarAdvertController : ControllerBase
+public class CarAdvertsController : ControllerBase
 {
-    private readonly CarAdvertService _service;
+    private readonly ICarService _service;
 
-    public CarAdvertController(CarAdvertService service)
-    {
-        _service = service;
-    }
+    public CarAdvertsController(ICarService service) => _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string? status, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-    {
-        var cars = await _service.GetAllAsync(status, page, pageSize);
-        return Ok(cars);
-    }
+    public async Task<IActionResult> GetAll() =>
+        Ok(await _service.GetAllCarsAsync());
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
@@ -24,9 +20,27 @@ public class CarAdvertController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(CarAdvert car)
+    public async Task<IActionResult> Create(CarAdvert car)
     {
-        await _service.AddAsync(car);
-        return CreatedAtAction(nameof(GetById), new { id = car.Id }, car);
+        var created = await _service.CreateAsync(car);
+        return CreatedAtAction(nameof(GetById),
+                               new { id = created.Id }, 
+                               created);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, CarAdvert car)
+    {
+        return await _service.UpdateAsync(id, car)
+            ? NoContent()
+            : NotFound();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        return await _service.DeleteAsync(id)
+            ? NoContent()
+            : NotFound();
     }
 }
