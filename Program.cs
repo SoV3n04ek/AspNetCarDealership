@@ -58,16 +58,18 @@ internal class Program
             // Добавьте тестовые данные
             if (!db.CarAdverts.Any())
             {
-                var testCar = new CarAdvert
+               for (int i =0;i<400;++i)
                 {
-                    Name = "Toyota Camry 2022",
-                    Year = 2022,
-                    Location = "New York",
-                    MileAge = 15000,
-                    Odometr = 15000,
-                    GasType = "Gasoline",
-                    PhotoUrls = new List<string> { "https://example.com/photo1.jpg" },
-                    Damages = new List<CarDamage>
+                    var testCar = new CarAdvert
+                    {
+                        Name = "Toyota Camry 2022",
+                        Year = 2022,
+                        Location = "New York",
+                        MileAge = 15000,
+                        Odometr = 15000,
+                        GasType = "Gasoline",
+                        PhotoUrls = new List<string> { "https://example.com/photo1.jpg" },
+                        Damages = new List<CarDamage>
                     {
                         new()
                         {
@@ -82,9 +84,11 @@ internal class Program
                             Description = "Требуется замена двигателя"
                         }
                     }
-                        };
+                    };
 
-                db.CarAdverts.Add(testCar);
+                    db.CarAdverts.Add(testCar);
+
+                }
                 await db.SaveChangesAsync();
             }
         }

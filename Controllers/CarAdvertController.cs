@@ -8,9 +8,6 @@ public class CarAdvertsController : ControllerBase
 
     public CarAdvertsController(ICarService service) => _service = service;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll() =>
-        Ok(await _service.GetAllCarsAsync());
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
@@ -42,5 +39,22 @@ public class CarAdvertsController : ControllerBase
         return await _service.DeleteAsync(id)
             ? NoContent()
             : NotFound();
+    }
+
+    /*[HttpGet]
+    public async Task<IActionResult> GetAll(int page = 1, int pageSize = 10)
+    {
+        var cars = await _service.GetAllCarsAsync(page, pageSize);
+        return Ok(cars);
+    }*/
+    [HttpGet]
+    public async Task<IActionResult> GetAll() =>
+        Ok(await _service.GetAllCarsAsync());
+
+    [HttpGet("paginated")] // Теперь будет GET /api/CarAdverts/paginated?page=1&pageSize=10
+    public async Task<IActionResult> GetAllPaginated(int page = 1, int pageSize = 10)
+    {
+        var result = await _service.GetAllCarsAsync(page, pageSize);
+        return Ok(result);
     }
 }
