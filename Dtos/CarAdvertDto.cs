@@ -11,8 +11,8 @@ public class CarAdvertDto
     public int MileAge { get; set; }
     public int Odometr { get; set; }
     public string GasType { get; set; }
-    List<string> PhotoUrls { get; set; }
-    List<CarDamageDto> Damages { get; set; }
+    public List<string> PhotoUrls { get; set; }
+    public List<CarDamageDto> Damages { get; set; }
 }
 
 public class CarAdvertCreateDto

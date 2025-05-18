@@ -16,10 +16,13 @@ public class CarService : ICarService
     public CarService(AppDbContext db) => _db = db;
 
     public async Task<List<CarAdvert>> GetAllCarsAsync() =>
-        await _db.CarAdverts.ToListAsync();
+        await _db.CarAdverts
+        .Include(c => c.Damages)
+        .ToListAsync();
 
     public async Task<CarAdvert?> GetByIdAsync(int id) =>
-        await _db.CarAdverts.FindAsync(id);
+        await _db.CarAdverts.Include(c => c.Damages)
+            .FirstOrDefaultAsync(c => c.Id == id);
             
     public async Task<CarAdvert> CreateAsync(CarAdvert car)
     {

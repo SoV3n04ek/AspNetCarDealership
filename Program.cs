@@ -24,7 +24,8 @@ internal class Program
 
         // SQLITE connection
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+                .LogTo(Console.WriteLine, LogLevel.Information));
 
         // Register your service (replace CarAdvertService with your actual service)
         builder.Services.AddScoped<ICarService, CarService>();
@@ -67,21 +68,21 @@ internal class Program
                     GasType = "Gasoline",
                     PhotoUrls = new List<string> { "https://example.com/photo1.jpg" },
                     Damages = new List<CarDamage>
-            {
-                new()
-                {
-                    Type = DamageType.MINOR_DENT_SCRATCHES,
-                    Severity = SeverityLevel.Low,
-                    Description = "Небольшая царапина на двери"
-                },
-                new()
-                {
-                    Type = DamageType.BURN_ENGINE,
-                    Severity = SeverityLevel.High,
-                    Description = "Требуется замена двигателя"
-                }
-            }
-                };
+                    {
+                        new()
+                        {
+                            Type = DamageType.MINOR_DENT_SCRATCHES,
+                            Severity = SeverityLevel.Low,
+                            Description = "Небольшая царапина на двери"
+                        },
+                        new()
+                        {
+                            Type = DamageType.BURN_ENGINE,
+                            Severity = SeverityLevel.High,
+                            Description = "Требуется замена двигателя"
+                        }
+                    }
+                        };
 
                 db.CarAdverts.Add(testCar);
                 await db.SaveChangesAsync();
